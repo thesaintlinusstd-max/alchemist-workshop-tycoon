@@ -1,0 +1,6 @@
+{
+  "name": "Alchemist Workshop Tycoon",
+  "description": "A Harry Potter Hogwarts potions workshop game with canon recipes, Diagon Alley apothecary shop, level progression, lore tooltips, and interactive brewing.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

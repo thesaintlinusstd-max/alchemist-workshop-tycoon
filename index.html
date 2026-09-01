@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>کارگاه معجون‌سازی هاگوارتز - کتاب معجون‌سازی پیشرفته</title>
+  <meta name="description" content="بازی معجون‌سازی دنیای هری پاتر با دستورهای فندوم و کتاب‌های رولینگ، خرید مواد از کوچه دیاگون، سیستم ارتقای سطح و دیگ جادویی تعاملی." />
+  <meta property="og:title" content="کارگاه معجون‌سازی هاگوارتز - Hogwarts Potions" />
+  <meta property="og:description" content="معجون‌سازی هاگوارتز با کتاب معجون‌سازی پیشرفته، مواد کوچه دیاگون و باز کردن دستورهای افسانه‌ای" />
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <div id="game-container">
+    <!-- Header -->
+    <header>
+      <div class="brand-title">
+        <span>⚡</span>
+        <span>کارگاه معجون‌سازی هاگوارتز</span>
+      </div>
+
+      <div class="stats-group">
+        <div class="stat-pill gold" id="goldPill">
+          🪙 <span id="goldText">50</span> گالیون جادویی
+        </div>
+
+        <div class="stat-pill reputation">
+          ⭐ <span id="repTitleText">سال اولی (شاگرد اسنیپ)</span> (<span id="repLevelText">سطح ۱</span>)
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 6px;">
+        <button class="btn-icon" id="shopModalBtn" title="داروخانه آپوتکری کوچه دیاگون">
+          🛒 خرید مواد از کوچه دیاگون
+        </button>
+        <button class="btn-icon" id="audioToggleBtn" title="قطع و وصل صدا">
+          🔊 <span id="audioLabel">صدا: روشن</span>
+        </button>
+        <button class="btn-icon" id="resetBtn" title="شروع مجدد">
+          🔄 نو
+        </button>
+      </div>
+    </header>
+
+    <!-- Potion Inventory Bar -->
+    <div class="inventory-bar">
+      <div class="inventory-title">
+        <span>🎒 انبار شیشه‌های آماده تحویل:</span>
+      </div>
+      <div class="inventory-items-wrap" id="inventoryContainer">
+        <!-- Rendered dynamically in JS -->
+      </div>
+    </div>
+
+    <!-- Main 3-Column Workshop Grid -->
+    <div class="workshop-main">
+
+      <!-- 1. LEFT COLUMN: Ingredients Shelf & Diagon Alley Stock -->
+      <section class="panel ingredients-panel">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">🌿 قفسه مواد معجون‌سازی هاگوارتز</div>
+            <div class="panel-desc">برای مشاهده پیشینه ماوس را نگه دارید • برای افزودن بزنید</div>
+          </div>
+        </div>
+
+        <!-- Shelf Content by Category -->
+        <div id="ingredientsShelfList" class="shelf-categories-wrapper">
+          <!-- Dynamic Ingredients List with Lore & Stock count -->
+        </div>
+      </section>
+
+      <!-- 2. CENTER COLUMN: Interactive Big Cauldron & Animation Stage -->
+      <section class="panel center-cauldron-section">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">⚗️ دیگ برنزی شماره ۲ و اجاق باستانی</div>
+            <div class="panel-desc">هم زدن، کنترل شعله، جوشاندن و ریختن در شیشه</div>
+          </div>
+        </div>
+
+        <!-- Interactive Canvas Stage -->
+        <div class="cauldron-stage-wrap">
+          <canvas id="cauldronCanvas"></canvas>
+
+          <div class="cauldron-overlay-info">
+            <div class="badge-status" id="cauldronLiquidStatus">دیگ خالی است (آماده شروع پخت)</div>
+            <div class="live-timer-badge">
+              ⏱️ زمان پخت: <span id="boilTimerText">0.0 ثانیه</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dashboard Controls -->
+        <div class="cauldron-dashboard">
+          <!-- Flame Control -->
+          <div class="controls-row-heat">
+            <div class="heat-label">
+              <span>🔥 درجه شعله زیر دیگ:</span>
+            </div>
+            <div class="heat-button-group">
+              <button class="btn-heat active" data-heat="off" onclick="setHeat('off')">خاموش</button>
+              <button class="btn-heat" data-heat="low" onclick="setHeat('low')">شعله کم</button>
+              <button class="btn-heat" data-heat="med" onclick="setHeat('med')">شعله متوسط</button>
+              <button class="btn-heat" data-heat="high" onclick="setHeat('high')">شعله زیاد</button>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="cauldron-action-buttons">
+            <button class="btn-cauldron-action btn-stir" onclick="stirCauldron()">
+              🥄 هم زدن معجون (<span id="liveStirCount">۰</span>)
+            </button>
+
+            <button class="btn-cauldron-action btn-dump" onclick="dumpCauldron()">
+              🗑️ شستشوی دیگ
+            </button>
+
+            <button class="btn-cauldron-action btn-finish" onclick="finishBrew()">
+              🧪 ریختن در بطری معجون
+            </button>
+          </div>
+
+          <!-- Ingredients History in Current Brew -->
+          <div class="ingredients-pot-log" id="ingredientsLog">
+            <span style="font-weight: 700;">محتویات دیگ:</span>
+            <span id="ingredientsListText" style="color: #f7d794;">(دیگ خالی است)</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. RIGHT COLUMN: Advanced Potion-Making Parchment Book -->
+      <section class="panel recipe-book-panel">
+        <div class="parchment-header">
+          <h2>📜 کتاب معجون‌سازی پیشرفته (لیباتیوس بورج)</h2>
+          <div style="font-size: 0.74rem; color: #72431b; font-weight: 600;">نسخه حاشیه‌نویسی شده شاهزاده دورگه (Severus Snape)</div>
+        </div>
+
+        <!-- 6 Recipe Tabs (Some locked initially) -->
+        <div class="recipe-tabs" id="recipeTabsContainer">
+          <!-- Populated in JS -->
+        </div>
+
+        <!-- Recipe Content Viewer -->
+        <div class="recipe-content-area" id="recipeContentArea">
+          <!-- Populated in JS -->
+        </div>
+      </section>
+    </div>
+
+    <!-- BOTTOM: Customer Orders Board -->
+    <section class="orders-section">
+      <div class="orders-header">
+        <div class="panel-title" style="font-size: 1.05rem;">
+          <span>👥 سفارش‌های هاگوارتز و دنیای جادویی</span>
+        </div>
+        <span style="font-size: 0.78rem; color: #f4c430; font-weight: 600;">سفارش جدید هر ۱۰ الی ۲۵ ثانیه • گالیون جمع کنید و مواد پیشرفته بخرید!</span>
+      </div>
+
+      <div class="orders-grid" id="ordersGrid">
+        <!-- Dynamic Orders injected via JS -->
+      </div>
+    </section>
+  </div>
+
+  <!-- Diagon Alley Apothecary Shop Modal -->
+  <div id="shopModal" class="modal-overlay">
+    <div class="modal-card shop-modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span>🏪</span>
+          <span>داروخانه آپوتکری اسلاگ و جیگرز (کوچه دیاگون)</span>
+        </div>
+        <button class="modal-close-btn" onclick="closeShopModal()">✖</button>
+      </div>
+
+      <div class="shop-intro">
+        گالیون‌های حاصل از تحویل سفارش‌ها را خرج خرید مواد اولیه کمیاب، قفل‌گشایی اجزای پیشرفته و پر کردن قفسه کنید!
+      </div>
+
+      <div class="shop-gold-display">
+        موجودی شما: <span style="color: #ffd700; font-weight: 800;" id="shopGoldText">50</span> گالیون 🪙
+      </div>
+
+      <div class="shop-items-grid" id="shopItemsGrid">
+        <!-- Injected via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Toast Notifications (Bottom-Left) -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- Result Banner Modal Popup -->
+  <div id="outcomePopup">
+    <h3 id="outcomeTitle">معجون ساخته شد!</h3>
+    <p id="outcomeDesc">کیفیت عالی و درخشان.</p>
+  </div>
+
+  <!-- Floating Lore Tooltip -->
+  <div id="loreTooltip" class="lore-tooltip-card">
+    <div class="tooltip-header">
+      <span id="tooltipIcon">🌿</span>
+      <span id="tooltipName">نام ماده</span>
+    </div>
+    <div class="tooltip-lore" id="tooltipLore">توضیحات فندوم هری پاتر...</div>
+    <div class="tooltip-footer" id="tooltipFooter">موجودی در قفسه: ۵ عدد</div>
+  </div>
+
+  <script src="%BASE_URL%game.js"></script>
+</body>
+</html>
